@@ -1,2 +1,5 @@
 [global.databases]
 todos = { url = "./todos.db" }
+
+[production]
+port=8420
