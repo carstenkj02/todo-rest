@@ -5,8 +5,14 @@
 #[macro_use] extern crate diesel;
 
 use serde::Serialize;
+use rocket::http::RawStr;
+use rocket::response::NamedFile;
 use rocket_contrib::json::Json;
+use rocket_contrib::templates::Template;
 use diesel::prelude::*;
+
+use std::vec::Vec;
+use std::path::{Path, PathBuf};
 
 mod schema;
 mod models;
@@ -17,13 +23,24 @@ struct Response {
     message: String,
 }
 
+#[derive(Serialize)]
+struct Tasks {
+    tasks: Vec<Task>,
+}
+
+impl Tasks {
+    fn new(tasks: Vec<Task>) -> Self {
+        Self { tasks }
+    }
+}
+
 #[get("/")]
 fn list(conn: TodosDB) -> Json<Vec<Task>> {
     use crate::schema::todos::dsl::*;
 
     match todos.load::<models::Task>(&*conn) {
         Ok(v) => Json(v),
-        Err(_) => Json(std::vec::Vec::new()),
+        Err(_) => Json(Vec::new()),
     }
 }
 
@@ -57,12 +74,30 @@ fn delete(conn: TodosDB, todoid: i32) -> Json<Response> {
     }
 }
 
+#[get("/view/<template>")]
+fn view(conn: TodosDB, template: &RawStr) -> Template {
+    let tasks = Tasks::new(Vec::<Task>::new());
+    use crate::schema::todos::dsl::*;
+
+    let tasks = Tasks::new(match todos.load::<models::Task>(&*conn) {
+        Ok(v) => v,
+        Err(_) => Vec::new(),
+    });
+    Template::render(format!("{}/index", template), tasks)
+}
+
+#[get("/static/<item..>")]
+fn files(item: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new("static/").join(item)).ok()
+}
+
 #[database("todos")]
 struct TodosDB(diesel::SqliteConnection);
 
 fn main() {
     rocket::ignite()
-        .mount("/", routes![list, add, delete, get])
+        .mount("/", routes![list, add, delete, get, files, view])
         .attach(TodosDB::fairing())
+        .attach(Template::fairing())
         .launch();
 }

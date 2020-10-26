@@ -1,0 +1,157 @@
+@font-face {
+  font-family: 'win95';
+  src: url('/static/font/px_sans_nouveaux.ttf') format('truetype');
+  src: url('/static/font/px_sans_nouveaux.woff') format('woff');
+  src: url('/static/font/px_sans_nouveaux.woff2') format('woff2');
+}
+
+body, html {
+	padding: 0 !important;
+  height: 100%;
+}
+
+.card {
+	height: 100%;
+	vertical-align: top;
+	font-size: 12px;
+	display: flex;
+	flex-direction: column;
+	font-family: 'win95', Arial, Helvetica, sans-serif;
+}
+
+.card-header {
+	padding: 0.2rem !important;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.menu-btn {
+	height: 100%;
+	width: 20px;
+	padding: 0;
+	font-size: 12px;
+	line-height: 16px;
+	border: solid 2px;
+	border-bottom-color: #424242;
+	border-right-color: #424242;
+	border-left-color: #fff;
+	border-top-color: #fff;
+	background: silver!important;
+}
+
+.menubar-itm {
+	margin-right: 0.3rem;
+}
+
+.seperator {
+	height: 3px;
+	background: #adb2b5;
+	border-bottom: 1px solid #e9ebec;
+	width: 99%;
+	margin: 0 auto;
+}
+
+.field {
+	height: 30px;
+	padding: 0.5rem;
+	padding-left: 1rem;
+}
+
+.msg-container {
+	display: flex;
+	flex-grow: 1;
+	background: #fff;
+	margin: 1rem;
+	margin-top: 0.3rem;
+	min-height: 200px;
+}
+
+.border {
+	border: solid;
+	border-width 1px;
+	border-bottom-color: #fafafa;
+	border-right-color: #fafafa;
+	border-left-color: #c4cacb;
+	border-top-color: #c4cacb;
+	box-shadow: 1px 1px 0 1px #191a1b, -1px -1px 0 1px #c4cacb; 
+}
+
+.scrollbar-btn {
+	border: solid 1px;
+	border-bottom-color: #191a1b;
+	border-right-color: #191a1b;
+	border-left-color: #c4cacb;
+	border-top-color: #c4cacb;
+	background: silver;
+	text-align: center;
+}
+
+.scrollbar {
+	display: flex;
+	flex-direction: column;
+	background: #e2e5e6;
+	flex: 1;
+}
+
+.msg-box {
+	flex: 99;
+	padding: 0.4rem;
+	font-size: 12px;
+}
+
+.author {
+	color: #60adad
+}
+
+.message {
+	margin-left: 1rem;
+}
+
+.input-container {
+	margin: 1rem;
+	margin-top: 0;
+	display: flex;
+	flex-direction: row;
+}
+
+.text-input {
+	background: #fff;
+	margin-right: 1rem;
+	height: 75px;
+	flex: 8;
+}
+
+.submit-input {
+	flex: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: solid 1px;
+	border-bottom-color: #191a1b;
+	border-right-color: #191a1b;
+	border-left-color: #fff;
+	border-top-color: #fff;
+	outline: solid 1px #191a1b;
+	background: silver;
+	text-align: center;
+}
+
+.action-bar {
+	padding: 0.5rem;
+	padding-left: 1.3rem;
+}
+
+.action {
+	display: inline;
+	margin-right: 0.5rem;
+}
+
+.action > img {
+	margin-right: 0.3rem;
+}

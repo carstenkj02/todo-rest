@@ -1,0 +1,58 @@
+{% extends 'messenger/base' %}
+{% block head %}
+	{{ super() }}
+	
+{% endblock %}
+{% block content %}
+<div class='card w95'>
+	<div class='card-header'>
+		<div class='left' style='display: flex; align-items: center;'><img src='/static/img/messenger-ico.png'/ style='margin-right: 0.3rem;'>MSN Messenger</div>
+		<div class='right'>
+			<button class='menu-btn'><i class="far fa-window-minimize"></i>
+			</button><button class='menu-btn'><i class="far fa-window-maximize"></i></button>
+			<button class='menu-btn'>X</button>
+		</div>
+	</div>
+	<div class='field'>
+		<span class='menubar-itm'><u>F</u>ile</span>
+		<span class='menubar-itm'><u>E</u>dit</span>
+		<span class='menubar-itm'><u>V</u>iew</span>
+		<span class='menubar-itm'><u>H</u>elp</span>
+	</div>
+	<div class='seperator'>
+	</div>
+	<div class='action-bar'>
+		<div class='action'><img src='/static/img/messenger-talk.png'/>Talk</div>
+		<div class='action'><img src='/static/img/messenger-invite.png'/>Invite</div>
+		<div class='action'><img src='/static/img/messenger-block.png'/>Block</div>
+	</div>
+	<div class='seperator'>
+	</div>
+	<div class='field'>
+		<span>To:</span>
+		<span>&lt;jay@lowbrowlabs.com&gt;</span>
+	</div>
+	<div class='msg-container border'>
+		<div class='msg-box'>
+			{% for task in tasks %}
+				<span class='author'>todo #{{ task['id'] }}</span><br/>
+				<span class='message'>{{ task['title'] }}</span><br/>
+			{% endfor %}
+		</div>
+		<div class='scrollbar'>
+			<div class='scrollbar-btn' style='flex: 2;'>^</div>
+			<div style='flex: 36; background: #00000000;'></div>
+			<div class='scrollbar-btn' style='flex: 10;'></div>
+			<div class='scrollbar-btn' style='flex: 2;'>v</div>
+		</div>
+	</div>
+
+	<div class='input-container'>
+		<div class='text-input border'>
+		</div>
+		<div class='submit-input'>
+			<u>S</u>end
+		</div>
+	</div>
+</div>
+{% endblock %}
