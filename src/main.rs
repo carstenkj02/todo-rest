@@ -6,7 +6,8 @@
 
 use serde::Serialize;
 use rocket::http::RawStr;
-use rocket::response::NamedFile;
+use rocket::response::{NamedFile, Responder};
+use rocket::{Request, Response};
 use rocket_contrib::json::Json;
 use rocket_contrib::templates::Template;
 use diesel::prelude::*;
@@ -19,7 +20,7 @@ mod models;
 use models::{Task, NewTask};
 
 #[derive(Serialize)]
-struct Response {
+struct Message {
     message: String,
 }
 
@@ -33,6 +34,17 @@ impl Tasks {
         Self { tasks }
     }
 }
+
+struct CachedFile(NamedFile);
+
+impl<'r> Responder<'r> for CachedFile {
+    fn respond_to(self, req: &Request) -> rocket::response::Result<'r> {
+        Response::build_from(self.0.respond_to(req)?)
+            .raw_header("Cache-control", "max-age=86400") //  24h (24*60*60)
+            .ok()
+    }
+}
+
 
 #[get("/")]
 fn list(conn: TodosDB) -> Json<Vec<Task>> {
@@ -55,28 +67,27 @@ fn get(conn: TodosDB, todoid: u32) -> Json<Task> {
 }
 
 #[post("/", data = "<task_json>")]
-fn add(conn: TodosDB, task_json: Json<NewTask>) -> Json<Response> {
+fn add(conn: TodosDB, task_json: Json<NewTask>) -> Json<Message> {
     use schema::todos;
     let task = task_json.into_inner();
     match diesel::insert_into(todos::table).values(&task).execute(&*conn) {
-        Err(e) => Json(Response{ message: format!("ERROR: {:?}", e) }),
-        Ok(_) => Json(Response{ message: format!("SUCCESS: {} ADDED", task.title) }),
+        Err(e) => Json(Message{ message: format!("ERROR: {:?}", e) }),
+        Ok(_) => Json(Message{ message: format!("SUCCESS: {} ADDED", task.title) }),
     }
 }
 
 #[delete("/<todoid>")]
-fn delete(conn: TodosDB, todoid: i32) -> Json<Response> {
+fn delete(conn: TodosDB, todoid: i32) -> Json<Message> {
     use crate::schema::todos::dsl::*;
 
     match diesel::delete(todos.filter(id.eq(todoid))).execute(&*conn) {
-        Err(e) => Json(Response { message: format!("ERROR: DELETING TODO: {:?}", e) }),
-        Ok(_) => Json(Response { message: format!("SUCCESS: DELETED TODO {}", todoid) }),
+        Err(e) => Json(Message { message: format!("ERROR: DELETING TODO: {:?}", e) }),
+        Ok(_) => Json(Message { message: format!("SUCCESS: DELETED TODO {}", todoid) }),
     }
 }
 
 #[get("/view/<template>")]
 fn view(conn: TodosDB, template: &RawStr) -> Template {
-    let tasks = Tasks::new(Vec::<Task>::new());
     use crate::schema::todos::dsl::*;
 
     let tasks = Tasks::new(match todos.load::<models::Task>(&*conn) {
@@ -87,8 +98,8 @@ fn view(conn: TodosDB, template: &RawStr) -> Template {
 }
 
 #[get("/static/<item..>")]
-fn files(item: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("static/").join(item)).ok()
+fn files(item: PathBuf) -> CachedFile {
+    CachedFile(NamedFile::open(Path::new("static/").join(item)).unwrap())
 }
 
 #[database("todos")]
