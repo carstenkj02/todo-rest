@@ -7,9 +7,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
         {% block styles %}
-	<link rel="stylesheet" href="/static/css/all.css">
-	<link rel="stylesheet" href="/static/css/messenger.css">
-	<link rel="stylesheet" href="/static/css/win95.css">
+				<link rel="stylesheet" href="/static/css/all.css">
+				<link rel="stylesheet" href="/static/css/messenger.css">
+				<link rel="stylesheet" href="/static/css/win95.css">
+				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
         {% endblock %}
 
         <title>Twitch TODO</title>
